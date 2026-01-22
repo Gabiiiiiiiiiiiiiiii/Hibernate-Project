@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.music'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java{
+    sourceCompatibility = JavaVersion.VERSION_16
+    targetCompatibility = JavaVersion.VERSION_16
+}
+configurations.all {
+    exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
+    exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
+    exclude group: 'jakarta.persistence', module: 'jakarta.persistence-api'
+}
+
+dependencies {
+
+    implementation 'org.hibernate:hibernate-core:5.5.6.Final'
+    runtimeOnly("org.postgresql:postgresql:42.2.23")
+    compileOnly("org.projectlombok:lombok:1.18.42")
+    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    implementation 'com.vladmihalcea:hibernate-types-52:2.12.1'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+    implementation("org.slf4j:slf4j-api:1.7.32")
+    implementation("org.slf4j:slf4j-log4j12:1.7.32")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.42")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.42")
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+    // Разрешаем Hibernate доступ к внутренностям Java 16
+    jvmArgs(
+            "--add-opens", "java.base/java.lang=ALL-UNNAMED",
+            "--add-opens", "java.base/java.util=ALL-UNNAMED",
+            "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED"
+    )
+}
+
